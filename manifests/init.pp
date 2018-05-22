@@ -63,6 +63,7 @@ class homebrew(
     user    => $user,
     path    => '/usr/local/bin:/usr/bin:/usr/sbin:/bin',
     creates => "${repositorydir}/.git",
+    environment => ["HOME=/Users/${user}"],
   }
 
   File {
