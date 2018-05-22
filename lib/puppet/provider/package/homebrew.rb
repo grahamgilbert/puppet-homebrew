@@ -34,11 +34,15 @@ Puppet::Type.type(:package).provide :homebrew, :parent => Puppet::Provider::Pack
 
   def self.available?(name, version)
     version = nil if unversioned? version
-    File.exist? File.join [home, "Cellar", simplify(name), version].compact
+    Puppet.debug("parameter 'version' has value '#{version}'")
+    available = File.exist? File.join [home, "Cellar", simplify(name), version].compact
+    Puppet.debug("parameter 'available' is '#{available}'")
+    available
   end
 
   def self.current(name)
     link = Pathname.new "#{home}/opt/#{simplify name}"
+    Puppet.debug("parameter 'link' has value '#{link}'")
     link.exist? && link.realpath.basename.to_s
   end
 
@@ -106,11 +110,17 @@ Puppet::Type.type(:package).provide :homebrew, :parent => Puppet::Provider::Pack
   end
 
   def latest
-    execute([ "brew", "ls", "--versions", @resource[:name] ], command_opts.merge({ :failonfail => false })).split.last
+    output = execute([ "brew", "ls", "--versions", @resource[:name] ], command_opts.merge({ :failonfail => false })).split.last
+    Puppet.debug("parameter 'output' has value '#{output}''")
+    output
   end
 
   def query
-    return if @resource[:ensure] == :latest
+    if @resource[:ensure] == :latest
+      # return if version == latest
+      Puppet.debug('Ensuring latest')
+    end
+    # return if @resource[:ensure] == :latest
     return unless version = self.class.current(@resource[:name])
     { :ensure => version, :name => @resource[:name] }
   end
