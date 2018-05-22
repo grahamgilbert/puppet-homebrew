@@ -4,7 +4,7 @@
 #
 #   include homebrew::repo
 class homebrew::repo (
-  $user,         = $homebrew::user
+  $user          = $homebrew::user,
   $repositorydir = $homebrew::config::repositorydir,
   $min_revision  = $homebrew::config::min_revision,
 ) {
