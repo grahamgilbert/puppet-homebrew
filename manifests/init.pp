@@ -46,7 +46,7 @@ class homebrew(
           $repositorydir,
           ]:
     ensure  => 'directory',
-    owner   => $::boxen_user,
+    owner   => $user,
     group   => 'staff',
     mode    => '0755',
     require => undef,
