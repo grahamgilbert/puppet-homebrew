@@ -11,6 +11,9 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
   has_feature :versionable
   has_feature :install_options
 
+  commands :brew => '/usr/local/bin/brew'
+  commands :stat => '/usr/bin/stat'
+
   # A list of `ensure` values that aren't explicit versions.
 
   def self.home
@@ -192,6 +195,14 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
     Facter.value(:homebrew_bottle_url)
   end
 
+  def user_id
+    owner = stat('-nf', '%Uu', '/usr/local/bin/brew').to_i
+  end
+
+  def group_id
+    group = stat('-nf', '%Ug', '/usr/local/bin/brew').to_i
+  end
+
   def command_opts
     @command_opts ||= {
       :combine            => true,
@@ -202,7 +213,8 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
         "HOMEBREW_CACHE"            => self.class.cache,
       },
       :failonfail         => true,
-      :uid                => default_user
+      :uid                => user_id.
+      :gid => group_id
     }
   end
 end
