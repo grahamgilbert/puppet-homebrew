@@ -213,8 +213,8 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
         "HOMEBREW_CACHE"            => self.class.cache,
       },
       :failonfail         => true,
-      :uid                => user_id.
-      :gid => group_id
+      :uid                => user_id,
+      :gid => group_id,
     }
   end
 end
