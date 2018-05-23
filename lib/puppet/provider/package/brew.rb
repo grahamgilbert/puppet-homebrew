@@ -203,11 +203,15 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
     group = stat('-nf', '%Ug', '/usr/local/bin/brew').to_i
   end
 
+  def home_dir
+    home  = Etc.getpwuid(owner).dir
+  end
+
   def command_opts
     @command_opts ||= {
       :combine            => true,
       :custom_environment => {
-        "HOME"                      => "/#{homedir_prefix}/#{default_user}",
+        "HOME"                      => "#{home_dir}",
         "PATH"                      => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin",
       },
       :failonfail                   => true,
