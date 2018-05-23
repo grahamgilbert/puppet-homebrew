@@ -204,7 +204,7 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
   end
 
   def home_dir
-    home  = Etc.getpwuid(owner).dir
+    home  = Etc.getpwuid(user_id).dir
   end
 
   def command_opts
