@@ -209,12 +209,10 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
       :custom_environment => {
         "HOME"                      => "/#{homedir_prefix}/#{default_user}",
         "PATH"                      => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin",
-        "BOXEN_HOMEBREW_BOTTLE_URL" => bottle_url,
-        "HOMEBREW_CACHE"            => self.class.cache,
       },
-      :failonfail         => true,
-      :uid                => user_id,
-      :gid => group_id,
+      :failonfail                   => true,
+      :uid                          => user_id,
+      :gid                          => group_id,
     }
   end
 end
