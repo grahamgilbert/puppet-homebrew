@@ -11,6 +11,9 @@ Puppet::Type.type(:package).provide :homebrew, :parent => Puppet::Provider::Pack
   has_feature :versionable
   has_feature :install_options
 
+  commands :brew => '/usr/local/bin/brew'
+  commands :stat => '/usr/bin/stat'
+
   # A list of `ensure` values that aren't explicit versions.
 
   def self.home
@@ -192,17 +195,28 @@ Puppet::Type.type(:package).provide :homebrew, :parent => Puppet::Provider::Pack
     Facter.value(:homebrew_bottle_url)
   end
 
+  def user_id
+    owner = stat('-nf', '%Uu', '/usr/local/bin/brew').to_i
+  end
+
+  def group_id
+    group = stat('-nf', '%Ug', '/usr/local/bin/brew').to_i
+  end
+
+  def home_dir
+    home  = Etc.getpwuid(user_id).dir
+  end
+
   def command_opts
     @command_opts ||= {
       :combine            => true,
       :custom_environment => {
-        "HOME"                      => "/#{homedir_prefix}/#{default_user}",
+        "HOME"                      => "#{home_dir}",
         "PATH"                      => "#{self.class.home}/bin:/usr/bin:/usr/sbin:/bin:/sbin",
-        "BOXEN_HOMEBREW_BOTTLE_URL" => bottle_url,
-        "HOMEBREW_CACHE"            => self.class.cache,
       },
-      :failonfail         => true,
-      :uid                => default_user
+      :failonfail                   => true,
+      :uid                          => user_id,
+      :gid                          => group_id,
     }
   end
 end
