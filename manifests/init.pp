@@ -25,7 +25,6 @@ class homebrew(
           "${installdir}/include",
           "${installdir}/lib",
           "${installdir}/lib/pkgconfig",
-          "${installdir}/Library",
           "${installdir}/sbin",
           "${installdir}/share",
           "${installdir}/share/locale",
@@ -43,7 +42,11 @@ class homebrew(
           "${installdir}/share/aclocal",
           "${installdir}/var",
           "${installdir}/var/log",
+          "${installdir}/Cellar",
+          "${installdir}/opt",
           $repositorydir,
+          "${repositorydir}/Library",
+          $tapsdir,
           ]:
     ensure  => 'directory',
     owner   => $user,
@@ -54,15 +57,15 @@ class homebrew(
   }
 
   exec { "install homebrew to ${repositorydir}":
-    command => "git init -q &&
+    command     => "git init -q &&
                 git config remote.origin.url https://github.com/${repo} &&
                 git config remote.origin.fetch master:refs/remotes/origin/master &&
                 git fetch origin master:refs/remotes/origin/master -n &&
                 git reset --hard origin/master",
-    cwd     => $repositorydir,
-    user    => $user,
-    path    => '/usr/local/bin:/usr/bin:/usr/sbin:/bin',
-    creates => "${repositorydir}/.git",
+    cwd         => $repositorydir,
+    user        => $user,
+    path        => '/usr/local/bin:/usr/bin:/usr/sbin:/bin',
+    creates     => "${repositorydir}/.git",
     environment => ["HOME=/Users/${user}"],
   }
 
@@ -73,12 +76,18 @@ class homebrew(
   file {
     [
       $cachedir,
-      $tapsdir,
       $cmddir,
       "${tapsdir}/boxen",
       $brewsdir,
-      "${brewsdir}/cmd"
+      "${brewsdir}/cmd",
     ]:
       ensure => 'directory';
+  }
+
+  file { '/usr/local/bin/brew':
+    ensure => 'link',
+    target => "${repositorydir}/bin/brew",
+    owner  => $user,
+    group  => 'staff'
   }
 }
