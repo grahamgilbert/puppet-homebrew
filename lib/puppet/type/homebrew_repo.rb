@@ -23,7 +23,7 @@ Puppet::Type.newtype(:homebrew_repo) do
     desc "User to run this operation as."
 
     defaultto do
-      Facter.value(:boxen_user) || Facter.value(:id) || "root"
+      Facter.value(:boxen_user) || Facter.value(:identity)["uid"] || "root"
     end
   end
 end

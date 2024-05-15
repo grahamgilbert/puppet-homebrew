@@ -75,7 +75,7 @@ Puppet::Type.type(:homebrew_repo).provide :homebrew do
   end
 
   def homedir_prefix
-    case Facter[:osfamily].value
+    case Facter[:os]['family'].value
     when "Darwin" then "Users"
     when "Linux" then "home"
     else
