@@ -65,11 +65,11 @@ Puppet::Type.type(:homebrew_tap).provide :default do
   end
 
   def default_user
-    Facter.value(:boxen_user) || Facter.value(:id) || "root"
+    Facter.value(:boxen_user) || Facter.value(:identity)["uid"] || "root"
   end
 
   def homedir_prefix
-    case Facter[:osfamily].value
+    case Facter[:os]['family'].value
     when "Darwin" then "Users"
     when "Linux" then "home"
     else

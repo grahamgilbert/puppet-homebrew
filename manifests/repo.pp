@@ -10,7 +10,7 @@ class homebrew::repo (
 ) {
   require homebrew
 
-  if $::osfamily == 'Darwin' {
+  if $facts[:os]['family'] == 'Darwin' {
     homebrew_repo { $repositorydir:
       min_revision => $min_revision,
       user         => $user

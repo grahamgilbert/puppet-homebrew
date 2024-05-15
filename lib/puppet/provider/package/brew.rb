@@ -171,7 +171,7 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
   end
 
   def homedir_prefix
-    case Facter[:osfamily].value
+    case Facter[:os]['family'].value
     when "Darwin" then "Users"
     when "Linux" then "home"
     else
@@ -180,7 +180,7 @@ Puppet::Type.type(:package).provide :brew, :parent => Puppet::Provider::Package 
   end
 
   def default_user
-    Facter.value(:boxen_user) || Facter.value(:id) || "root"
+    Facter.value(:boxen_user) || Facter.value(:identity)["uid"] || "root"
   end
 
   def s3_host
